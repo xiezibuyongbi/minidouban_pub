@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>书单</title>
+    <meta content="no-referrer" name="referrer"/>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script th:src="@{/js/readingList.js}" type="text/javascript"></script>
+    <script th:src="@{/js/common.js}" type="text/javascript"></script>
+</head>
+<body>
+<table>
+    <tr>
+        <td>
+            <a href="/search" style="color: blue">搜索</a>
+        </td>
+        <td>
+            <a href="/advanced_search" style="color: blue">高级搜索</a>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <form action="/create-list" method="post">
+                <input id="list-name-to-create" name="listNameToCreate" type="hidden" value="">
+                <input onclick="return createReadingList()" type="submit" value="创建新的书单">
+            </form>
+        </td>
+        <td>
+            <form action="/delete-all-list" method="post">
+                <input name="ifDeleteAllList" type="hidden" value="1">
+                <input onclick="return deleteAllList()" type="submit" value="删除所有书单">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <div style="float: left">
+            <form action="/reading_list" id="submit-reading-list" method="get">
+                <td>
+                    <select id="reading-lists" name="selectedListName" th:object="${readingListsName}">
+                        <!--                onchange="selectReadingList()">-->
+                        <option selected="selected" value="">请选择书单</option>
+                        <option th:each="readingListName : ${readingListsName}" th:text="${readingListName}"
+                                th:value="${readingListName}"></option>
+                    </select>
+                </td>
+                <td>
+                    <input type="submit" value="查看书单内容">
+                </td>
+            </form>
+        </div>
+        <td>
+            <div style="float: left">
+                <form action="/delete-list" id="delete-reading-list" method="post">
+                    <input id="list-name-to-delete" name="listNameToDelete" type="hidden">
+                    <input onclick="return deleteReadingList()" type="submit" value="删除这个书单">
+                </form>
+            </div>
+        </td>
+        <td>
+            <div style="float: left">
+                <form action="/rename-list" id="rename-reading-list" method="post">
+                    <input id="old-list-name" name="oldListName" type="hidden">
+                    <input id="desired-list-name" name="desiredListName" type="hidden">
+                    <input onclick="renameReadingList()" type="submit" value="重命名书单">
+                </form>
+            </div>
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td></td>
+        <td>
+            <div style="clear: both">
+                <input onclick="return removeBookFromList()" type="submit" value="移除选定的书">
+            </div>
+        </td>
+    </tr>
+</table>
+<br>
+<div class="container-fluid p-t-15">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header"><h4></h4></div>
+                <div class="card-body">
+                    <div class="table-responsive" th:unless="${#lists.isEmpty(booksInList)}">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <td>
+                                    <button onclick="fullCheckSwitch('bookIdToRemove')">全选/不选</button>
+                                </td>
+                                <th>封面</th>
+                                <th>书籍名</th>
+                                <th>作者</th>
+                                <th>出版社</th>
+                                <th>评论数</th>
+                                <th>价格</th>
+                                <th>出版日期</th>
+                                <th>评分</th>
+                            </tr>
+                            </thead>
+                            <form action="/remove-book" id="remove-book-from-list" method="post">
+                                <input id="list-name-delete-from" name="listNameDeleteFrom" type="hidden">
+                                <tbody>
+                                <tr th:each="book : ${booksInList}">
+                                    <td>
+                                        <input name="bookIdToRemove" th:value="${book.bookId}" type="checkbox">
+                                    </td>
+                                    <td>
+                                        <img alt="封面" height="160px" th:src="${book.coverLink}" width="120px"/>
+                                    </td>
+                                    <td>
+                                        <div style="text-align: center">
+                                            <a th:href="${book.link}" th:text="${book.title}"></a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div align="center" th:text="${book.authors}"></div>
+                                    </td>
+                                    <td>
+                                        <div align="center" th:text="${book.publisher}"></div>
+                                    </td>
+                                    <td>
+                                        <div align="center" th:text="${book.commentNum}"></div>
+                                    </td>
+                                    <td>
+                                        <div align="center" th:text="${book.price}"></div>
+                                    </td>
+                                    <td>
+                                        <div align="center" th:text="${book.pubYear}"></div>
+                                    </td>
+                                    <td>
+                                        <div align="center" th:text="${book.rating}"></div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </form>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
