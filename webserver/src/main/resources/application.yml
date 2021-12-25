@@ -1,0 +1,75 @@
+server:
+  port: 80
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+    session:
+      persistent: false
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  thymeleaf:
+    cache: false
+  devtools:
+    restart:
+      enabled: true
+      exclude: WEB-INF/**
+      additional-paths: src/main/java
+  datasource:
+    url: jdbc:mysql://yourhost/MiniDouban?useUnicode=true&characterEncoding=utf-8
+    username: 
+    password: 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
+  redis:
+    host: 
+    port: 
+    password: 
+    timeout: 15000
+  mail:
+    host: 
+    username: 
+    nickname: 迷你豆瓣
+    password: 
+    default-encoding: UTF-8
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable:
+              true
+  kafka:
+    bootstrap-servers: 
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      auto-commit-interval: 100
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual
+    producer:
+      retries: 10
+      acks: -1
+      properties:
+        retry:
+          backoff:
+            ms:
+              200
+logging:
+  level:
+    root: WARN
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.minidouban.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+elasticsearch:
+  host: 
+  port: 
+  scheme: http

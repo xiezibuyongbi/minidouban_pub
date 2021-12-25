@@ -1,9 +1,11 @@
 package com.minidouban.dao;
 
 import com.minidouban.pojo.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+@Mapper
 @Repository
 public interface UserRepository {
     public User findByUsername(String username);

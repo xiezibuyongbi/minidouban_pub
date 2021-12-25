@@ -9,7 +9,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication (scanBasePackages = "com.minidouban", exclude = SecurityAutoConfiguration.class)
 @EntityScan (basePackages = "com.minidouban.pojo")
-@MapperScan (basePackages = "com.minidouban.dao")
 @EnableAspectJAutoProxy
 public class WebserverApplication {
 

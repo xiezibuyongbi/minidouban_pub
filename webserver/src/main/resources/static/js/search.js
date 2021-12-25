@@ -16,28 +16,21 @@ function addBookToList() {
 }
 
 function pageRequest(direction) {
-    const keyword = getQueryVar("keyword");
+    const keyword = $("#keyword").val();
     let pageNum = getQueryVar("pageNum");
-    const pageForm = $("#page-info");
-    if (pageNum === "") {
-        if (direction === "0") {
-            pageNum = 0;
-        } else {
-            pageNum = 1;
-        }
-    } else {
-        pageNum = parseInt(pageNum);
-        if (pageNum === 0 && direction === "0") {
-            pageNum = 0;
-        } else {
-            pageNum = (direction === '0') ? (pageNum - 1) : (pageNum + 1);
-        }
-    }
-    pageForm.children().eq(0).val(pageNum.toString());
-    pageForm.children().eq(1).val(keyword);
+    const backupPageNum = pageNum;
+    pageNum = turnPage(pageNum, direction);
     $.ajax({
-        url: "/search",
-        type: "GET",
-        data: pageForm.serialize(),
+        url: "/search?pageNum=" + pageNum + "&keyword=" + keyword,
+        type: "POST",
+        success: (data) => {
+            if (isPageEmpty()) {
+                pageNum = backupPageNum;
+                alert(noSearchResultPrompt);
+            } else {
+                $("#show-books").html(data);
+            }
+            history.pushState(null, null, "?pageNum=" + pageNum + "&keyword=" + keyword);
+        }
     });
 }

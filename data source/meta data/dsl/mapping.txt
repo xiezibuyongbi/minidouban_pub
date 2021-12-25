@@ -1,0 +1,71 @@
+PUT minidouban_book/
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ik-with-stem": {
+          "type": "custom",
+          "tokenizer": "ik_smart",
+          "filter": [
+            "stemmer"
+          ]
+        }
+      },
+      "default": {
+        "type": "ik-with-stem"
+      },
+      "default_search": {
+        "type": "ik-with-stem"
+      }
+    }
+  }
+}
+
+PUT minidouban_book/_mapping
+{
+  "properties": {
+    "title": {
+      "type": "text",
+      "analyzer": "ik-with-stem",
+      "search_analyzer": "ik-with-stem"
+    },
+    "bookId": {
+      "type": "keyword"
+    },
+    "coverLink": {
+      "type": "keyword",
+      "index": "false"
+    },
+    "authors": {
+      "type": "text",
+      "analyzer": "ik-with-stem",
+      "search_analyzer": "ik-with-stem"
+    },
+    "commentNum": {
+      "type": "integer"
+    },
+    "brief": {
+      "type": "text",
+      "analyzer": "ik-with-stem",
+      "search_analyzer": "ik-with-stem"
+    },
+    "link": {
+      "type": "keyword",
+      "index": "false"
+    },
+    "rating": {
+      "type": "half_float"
+    },
+    "publisher": {
+      "type": "text",
+      "analyzer": "ik-with-stem",
+      "search_analyzer": "ik-with-stem"
+    },
+    "pubYear": {
+      "type": "short"
+    },
+    "price": {
+      "type": "half_float"
+    }
+  }
+}

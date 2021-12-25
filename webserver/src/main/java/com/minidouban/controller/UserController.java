@@ -133,13 +133,12 @@ public class UserController {
     }
 
     @GetMapping ("/logout")
-    public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response,
+    public String logout(HttpServletRequest request, HttpServletResponse response,
                          @CookieValue ("userId") Cookie userIdCookie) {
         jedisUtils.del(cacheKeyGenerator.getRedisKey(TOKEN_CACHE_KEY_PREFIX, cookieManager.getUserId(userIdCookie)));
         Cookie token = authorizationService.getAuthCookie(request.getCookies());
         token.setValue(null);
         response.addCookie(token);
-        //TODO 让cookie失效
         return "redirect:/search";
     }
 

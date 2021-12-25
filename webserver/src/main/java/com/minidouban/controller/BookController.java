@@ -10,10 +10,7 @@ import com.minidouban.service.BookService;
 import com.minidouban.service.ReadingListService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -33,9 +30,8 @@ public class BookController {
     private CookieManager cookieManager;
 
     @GetMapping ("/search")
-    public String search(Model model, HttpSession session, String keyword,
-                         @RequestParam (value = "pageNum", required = false, defaultValue = "0") int pageNum,
-                         @CookieValue ("username") Cookie usernameCookie, @CookieValue ("userId") Cookie userIdCookie) {
+    public String search(Model model, @CookieValue (value = "username", required = false) Cookie usernameCookie,
+                         @CookieValue (value = "userId", required = false) Cookie userIdCookie) {
         String username = cookieManager.getUsername(usernameCookie);
         if (!isEmpty(username)) {
             model.addAttribute("username", username);
@@ -43,23 +39,25 @@ public class BookController {
                     cookieManager.getUserId(userIdCookie));
             model.addAttribute("readingListsName", readingListMap.keySet());
         }
+        return "search";
+    }
+
+    @PostMapping ("/search")
+    public String search(String keyword, Model model,
+                         @RequestParam (value = "pageNum", required = false, defaultValue = "0") int pageNum) {
         if (isEmpty(keyword)) {
-            return "search";
+            return "redirect:/search";
         }
         Page<Book> page = bookService.findByKeyword(keyword, PageInfo.of(pageNum, PAGE_SIZE));
         if (page.isEmpty()) {
             model.addAttribute("msg", Prompt.NO_SEARCH_RESULT_PROMPT);
-            return "search";
         }
         model.addAttribute("books", page.getContent());
-        return "search";
+        return "search::show-books-fragment";
     }
 
     @GetMapping ("/advanced_search")
-    public String advancedSearch(Model model, HttpSession session,
-                                 @RequestParam (value = "pageNum", required = false, defaultValue = "0") int pageNum,
-                                 @RequestParam ("bookPredicate") BookPredicate bookPredicate,
-                                 @CookieValue ("username") Cookie usernameCookie,
+    public String advancedSearch(Model model, @CookieValue ("username") Cookie usernameCookie,
                                  @CookieValue ("userId") Cookie userIdCookie) {
         String username = cookieManager.getUsername(usernameCookie);
         if (!isEmpty(username)) {
@@ -68,17 +66,16 @@ public class BookController {
                     cookieManager.getUserId(userIdCookie));
             model.addAttribute("readingListsName", readingListMap.keySet());
         }
-        if (bookPredicate != null) {
-            Page<Book> bookSlice = bookService.findFuzzily(bookPredicate, PageInfo.of(pageNum, PAGE_SIZE));
-            model.addAttribute("books", bookSlice.getContent());
-        }
+        model.addAttribute("bookPredicate", new BookPredicate());
         return "advanced_search";
     }
 
     @PostMapping ("/advanced_search")
-    public String advancedSearch(HttpSession session, BookPredicate bookPredicate) {
-        session.setAttribute("bookPredicate", bookPredicate);
-        return "redirect:/advanced_search";
+    public String advancedSearch(@RequestParam (value = "pageNum", required = false, defaultValue = "0") int pageNum,
+                                 @RequestBody BookPredicate bookPredicate, Model model) {
+        Page<Book> bookSlice = bookService.findByPredicate(bookPredicate, PageInfo.of(pageNum, PAGE_SIZE));
+        model.addAttribute("books", bookSlice.getContent());
+        return "advanced_search::show-books-fragment";
     }
 
 }

@@ -42,7 +42,8 @@ public class BookService {
         return bookRepository.findByBookId(bookId);
     }
 
-    public Page<Book> findFuzzily(BookPredicate bookPredicate, PageInfo pageInfo) {
+    public Page<Book> findByPredicate(BookPredicate bookPredicate, PageInfo pageInfo) {
+        bookPredicate.adjust();
         String key = md5DigestAsHex((bookPredicate.toString() + pageInfo.toString()).getBytes());
         String redisResult = jedisUtils.get(key);
         if (redisResult != null) {
@@ -53,8 +54,8 @@ public class BookService {
                 e.printStackTrace();
             }
         }
-        Page<Book> page = new Page<>(pageInfo, bookRepository.findFuzzily(bookPredicate, pageInfo.getOffset(),
-                                                                          pageInfo.getPageSize()));
+        Page<Book> page = new Page<>(pageInfo, bookRepository.findByPredicate(bookPredicate, pageInfo.getOffset(),
+                                                                              pageInfo.getPageSize()));
         try {
             jedisUtils.setExpire(key, RESULT_EXPIRE_SECONDS, objectMapper.writeValueAsString(page));
         } catch (JsonProcessingException e) {

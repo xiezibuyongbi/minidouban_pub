@@ -13,6 +13,9 @@ public class CookieManager {
     private SafetyUtils safetyUtils;
 
     public String getUsername(Cookie usernameCookie) {
+        if (usernameCookie == null) {
+            return null;
+        }
         try {
             return safetyUtils.decrypt(usernameCookie.getValue());
         } catch (IllegalBlockSizeException | BadPaddingException e) {

@@ -1,11 +1,13 @@
 package com.minidouban.dao;
 
 import com.minidouban.pojo.ReadingListBook;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Mapper
 @Repository
 public interface ReadingListBookRepository {
     public ReadingListBook findByListIdAndBookId(@Param ("listId") long listId, @Param ("bookId") long bookId);

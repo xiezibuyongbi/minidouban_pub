@@ -34,7 +34,6 @@ public class ReadingListController {
             model.addAttribute("booksInList",
                                readingListBookService.getBooksInList(readingListMap.get(selectedListName)));
         }
-        //TODO 为什么model变化了不刷新页面
         return "reading_list";
     }
 

@@ -17,6 +17,7 @@ function checkBlank() {
     return false;
 }
 
+const noSearchResultPrompt = "无搜索结果！";
 const fillBlankPrompt = "请填写完整！";
 const verifyFailPrompt = "验证码错误！"
 const passwordMismatchPrompt = "两次输入的密码不一致！";
@@ -125,4 +126,49 @@ function promptCountdown(element, second) {
 
 function addCookie(name, value, timestamp) {
     document.cookie = name + "=" + value + "; " + timestamp;
+}
+
+function isPageEmpty() {
+    return $("input[name='bookIdToAdd']").length === 0;
+}
+
+function formToJSON(formTag) {
+    let dataArray = {};
+    $.each(formTag.serializeArray(), function () {
+        if (dataArray[this.name]) {
+            if (!dataArray[this.name].push) {
+                dataArray[this.name] = [dataArray[this.name]];
+            }
+            dataArray[this.name].push(this.value || '');
+        } else {
+            dataArray[this.name] = this.value || '';
+        }
+    });
+    return JSON.stringify(dataArray);
+}
+
+function turnPage(pageNum, direction) {
+    if (pageNum === "") {
+        if (direction === "0") {
+            pageNum = 0;
+        } else {
+            pageNum = 1;
+        }
+    } else {
+        pageNum = parseInt(pageNum);
+        if (pageNum === 0 && direction === "0") {
+            pageNum = 0;
+        } else {
+            pageNum = (direction === '0') ? (pageNum - 1) : (pageNum + 1);
+        }
+    }
+    return pageNum;
+}
+
+function getPath(url) {
+    let paramStartPos = url.indexOf("?");
+    if (paramStartPos === -1) {
+        return url;
+    }
+    return url.substring(0, paramStartPos);
 }

@@ -1,0 +1,23 @@
+PUT _scripts/keyword-search
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "query": {
+        "multi_match": {
+          "query": "{{keyword}}{{^keyword}}abcdefg{{/keyword}}",
+          "fields": ["title^1.5", "authors^1.5", "brief^1.3", "publisher"],
+          "type": "best_fields",
+          "fuzziness": 1,
+          "tie_breaker": 0.5
+        }
+      },
+      "sort": [
+        {"_score": {"order": "desc"}},
+        {"commentNum": {"order": "desc"}}
+      ],
+      "from": "{{from}}{{^from}}0{{/from}}",
+      "size": "{{size}}{{^size}}10{{/size}}"
+    }
+  }
+}

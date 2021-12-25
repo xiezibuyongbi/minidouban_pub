@@ -29,9 +29,6 @@ public class ReadingListBookService {
     private ReadingListBookRepository readingListBookRepository;
 
     @Resource
-    private ReadingListRepository readingListRepository;
-
-    @Resource
     private BookRepository bookRepository;
 
     public int addBookToList(long listId, long bookId) {

@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta content="no-referrer" name="referrer"/>
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script th:src="@{/js/advanced_search.js}" type="text/javascript"></script>
     <script th:src="@{/js/search.js}" type="text/javascript"></script>
     <script th:src="@{/js/common.js}" type="text/javascript"></script>
     <title>高级搜索</title>
@@ -74,88 +75,70 @@
 </table>
 <br>
 <!--/*@thymesVar id="bookPredicate" type=""*/-->
-<form action="/advanced_search" method="get" th:object="${bookPredicate}">
+<form id="predicate" th:object="${bookPredicate}">
     <div>
         <b>不作限制的条件可不填</b>
     </div>
     <div>
         <span>书籍名</span>
-        <input name="title" type="text">
-        <!--        th:value="${bookPredicate.title}">-->
-        <input type="submit" value="搜索">
+        <input th:field="*{title}">
+        <button onclick="return postPredicate('0')" type="button">搜索</button>
     </div>
     <div>
         <span>评论数大于等于</span>
-        <input name="commentNum" type="text">
-        <!--        th:value="${bookPredicate.commentNum}">-->
+        <input th:field="*{commentNum}">
         <span>，小于等于</span>
-        <input name="commentNum1" type="text">
-        <!--        th:value="${bookPredicate.commentNum1}">-->
+        <input th:field="*{commentNum1}">
     </div>
     <div>
         <span>类型</span>
-        <input name="brief" type="text">
-        <!--        th:value="${bookPredicate.brief}">-->
+        <input th:field="*{brief}">
     </div>
     <div>
         <span>评分大于等于</span>
-        <input name="rating" type="text">
-        <!--        th:value="${bookPredicate.rating}">-->
+        <input th:field="*{rating}">
         <span>，小于等于</span>
-        <input name="rating1" type="text">
-        <!--        th:value="${bookPredicate.rating1}">-->
+        <input th:field="*{rating1}">
     </div>
     <div>
         <span>出版商</span>
-        <input name="publisher" type="text">
-        <!--        th:value="${bookPredicate.publisher}">-->
+        <input th:field="*{publisher}">
     </div>
     <div>
         <span>出版年份晚于或等于</span>
-        <input name="pubYear" type="text">
-        <!--        th:value="${bookPredicate.pubYear}">-->
+        <input th:field="*{pubYear}">
         <span>，早于或等于</span>
-        <input name="pubYear1" type="text">
-        <!--        th:value="${bookPredicate.pubYear1}">-->
+        <input th:field="*{pubYear1}">
     </div>
     <div>
         <span>定价大于等于</span>
-        <input name="price" type="text">
-        <!--        th:value="${bookPredicate.price}">-->
+        <input th:field="*{price}">
         <span>，小于等于</span>
-        <input name="price1" type="text">
-        <!--        th:value="${bookPredicate.price1}">-->
+        <input th:field="*{price1}">
     </div>
     <div>
         <span>作者</span>
-        <input name="authors" type="text">
-        <!--        th:value="${bookPredicate.authors}">-->
+        <input th:field="*{authors}">
     </div>
 </form>
 <br>
-<div th:if="${not #lists.isEmpty(books)}">
-    <button onclick="return pageRequest('0')" th:if="${#bools.isTrue(hasPrePage)}">上一页</button>
-    <button onclick="noPrePagePrompt()" th:if="${#bools.isFalse(hasPrePage)}">上一页</button>
-    <button onclick="return pageRequest('1')" th:if="${#bools.isTrue(hasNextPage)}">下一页</button>
-    <button onclick="noNextPagePrompt()" th:if="${#bools.isFalse(hasNextPage)}">下一页</button>
-    <form action="/advanced_search" id="page-direction" method="get">
-        <input name="pageDirection" type="hidden">
-        <input name="keyword" type="hidden">
-    </form>
+<div>
+    <button onclick="return postPredicate('0')" type="button">上一页</button>
+    <button onclick="return postPredicate('1')" type="button">下一页</button>
 </div>
 <!--/*@thymesVar id="msg" type=""*/-->
-<div class="container-fluid p-t-15">
+<div class="container-fluid p-t-15" id="show-books" th:fragment="show-books-fragment">
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header"><h4></h4></div>
                 <div class="card-body">
-                    <div class="table-responsive" th:unless="${#lists.isEmpty(books)}">
+                    <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th>
-                                    <button onclick="fullCheckSwitch('bookIdToAdd')">全选/不选</button>
+                                    <button onclick="fullCheckSwitch('bookIdToAdd')" type="button">全选/不选</button>
                                 </th>
                                 <th>封面</th>
                                 <th>书籍名</th>
@@ -211,7 +194,7 @@
     </div>
 </div>
 <div style="float: right">
-    <button onclick="return backToTop()">回到顶部</button>
+    <button onclick="return backToTop()" type="button">回到顶部</button>
 </div>
 </body>
 </html>
